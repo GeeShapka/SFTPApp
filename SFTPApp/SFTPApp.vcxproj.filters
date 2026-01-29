@@ -24,6 +24,12 @@
     <ClCompile Include="sftp.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="menus.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="stringOperations.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="uiOperations.h">
@@ -39,6 +45,15 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="maximums.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="stringOperations.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="errors.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ansiCodes.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

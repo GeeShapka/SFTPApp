@@ -5,6 +5,7 @@
 */
 
 #pragma once
+#pragma warning(disable : 4996)
 #include <libssh2.h>
 #include <libssh2_sftp.h>
 
@@ -14,3 +15,5 @@
 #include <string.h>
 
 #include "maximums.h"
+#include "errors.h"
+#include "ansiCodes.h"
