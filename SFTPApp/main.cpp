@@ -1,3 +1,9 @@
+/*FILE: main.cpp
+* PROGRAMMER: George Shapka
+* FIRST VERSION: 28/01/2026
+* CONTENTS: this file contains the main program loop
+*/
+
 #include "headers.h"
 #include "uiOperations.h"
 #include "menus.h"
@@ -5,8 +11,6 @@
 
 int main(void)
 {
-	char d[] = "fefefefefefen";
-	char de[] = "ddddddddddddd\n";
-	consoleWriteLine(d);
-	consoleWriteLine(de);
+	char test[100] = REMOTE_PATH_MENU;
+	consoleWriteLine(test);
 }
