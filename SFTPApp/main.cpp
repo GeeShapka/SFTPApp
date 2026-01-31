@@ -9,6 +9,7 @@
 #include "uiOperations.h"
 #include "menus.h"
 #include "sftp.h"
+#include "stringOperations.h"
 
 void cleanUp(struct Program*);
 
@@ -36,41 +37,75 @@ int main(void)
 		cleanUp(p);
 		return EXIT_FAILURE;
 	}
+	char str[11] = "4294967295";
+	int ans = 0;
 
 	int mainMenuOption = 0;
-	bool doLoop = true;
+	bool doMainLoop = true;
+	bool doConfigLoop = true;
+	bool doLocalPathLoop = true;
+	bool doRemotePathLoop = true;
+	bool doOperationLoop = true;
 
 	//program loop
-	while (doLoop)
+	while (doMainLoop)
 	{
 		switch (mainMenu(p))
 		{
 		case OPTION_CONFIG:
-			switch (configMenu(p))
+			doConfigLoop = true;
+			while (doConfigLoop)
 			{
-			default:
-				break;
+				switch (configMenu(p))
+				{
+				case OPTION_UNIVERSAL_BACK:
+					doConfigLoop = false;
+					break;
+				default:
+					break;
+				}
 			}
 			break;
 		case OPTION_LOCAL_PATH:
-			switch (localPathMenu(p))
+			doLocalPathLoop = true;
+			while (doLocalPathLoop)
 			{
-			default:
-				break;
+				switch (localPathMenu(p))
+				{
+				case OPTION_UNIVERSAL_BACK:
+					doLocalPathLoop = false;
+					break;
+				default:
+					break;
+				}
 			}
 			break;
 		case OPTION_REMOTE_PATH:
-			switch (remotePathMenu(p))
+			doRemotePathLoop = true;
+			while (doRemotePathLoop)
 			{
-			default:
-				break;
+				switch (remotePathMenu(p))
+				{
+				case OPTION_UNIVERSAL_BACK:
+					doRemotePathLoop = false;
+					break;
+				default:
+					break;
+				}
 			}
 			break;
 		case OPTION_OPERATION:
-			switch (operationMenu(p))
+			doOperationLoop = true;
+			while (doOperationLoop)
 			{
-			default:
-				break;
+				switch (operationMenu(p))
+				{
+				case OPTION_UNIVERSAL_BACK:
+					doOperationLoop = false;
+					break;
+				default:
+					break;
+				}
 			}
 			break;
 		case OPTION_TRANSFER:
@@ -81,7 +116,7 @@ int main(void)
 			}
 			break;
 		case OPTION_EXIT:
-			doLoop = false;
+			doMainLoop = false;
 			break;
 		default:
 			break;

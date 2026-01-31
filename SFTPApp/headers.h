@@ -14,6 +14,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <conio.h>
+#include <math.h>
 
 #include "maximums.h"
 #include "errors.h"

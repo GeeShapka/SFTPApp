@@ -18,3 +18,6 @@
 /// </returns>
 bool removeTrailingNewLine(char*, size_t);
 
+
+bool stringToUnsignedInt(char* string, int maxLength, int* result);
+
