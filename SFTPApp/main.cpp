@@ -45,7 +45,42 @@ int main(void)
 	{
 		switch (mainMenu(p))
 		{
-		case 6://exit
+		case OPTION_CONFIG:
+			switch (configMenu(p))
+			{
+			default:
+				break;
+			}
+			break;
+		case OPTION_LOCAL_PATH:
+			switch (localPathMenu(p))
+			{
+			default:
+				break;
+			}
+			break;
+		case OPTION_REMOTE_PATH:
+			switch (remotePathMenu(p))
+			{
+			default:
+				break;
+			}
+			break;
+		case OPTION_OPERATION:
+			switch (operationMenu(p))
+			{
+			default:
+				break;
+			}
+			break;
+		case OPTION_TRANSFER:
+			switch (transferMenu(p))
+			{
+			default:
+				break;
+			}
+			break;
+		case OPTION_EXIT:
 			doLoop = false;
 			break;
 		default:
