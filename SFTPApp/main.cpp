@@ -10,13 +10,40 @@
 #include "menus.h"
 #include "sftp.h"
 
+void cleanUp(struct Program*);
+
 int main(void)
 {
+	//alocate memory needed during runtime
+	struct Program* p = (struct Program*)calloc(1, sizeof(struct Program));
+	if (p == NULL)
+	{
+		consoleWriteError(ERROR_COULD_NOT_ALLOCATE);
+		return EXIT_FAILURE;
+	}
+
+	//set the os being used
+	#ifdef _WIN32
+	p->os = 1;
+	#elif __linux__
+	p->os = 2;
+	#endif
+
+	//if os is unsupported
+	if (p->os == 0)
+	{
+		consoleWriteLineConst("Cannot detect OS, or OS is not supported");
+		cleanUp(p);
+		return EXIT_FAILURE;
+	}
+
 	int mainMenuOption = 0;
 	bool doLoop = true;
+
+	//program loop
 	while (doLoop)
 	{
-		switch (mainMenu())
+		switch (mainMenu(p))
 		{
 		case 6://exit
 			doLoop = false;
@@ -28,5 +55,23 @@ int main(void)
 
 	consoleWriteConst(ANSI_HOME_POSITION);
 	consoleWriteConst(ANSI_CLEAR_SCREEN);
+
+	cleanUp(p);
 	return EXIT_SUCCESS;
+}
+
+
+
+/// <summary>
+/// frees allocated memory
+/// </summary>
+/// <param name="p"></param>
+void cleanUp(struct Program* p)
+{
+	if (p != NULL)
+	{
+		free(p);
+		p = NULL;
+	}
+	return;
 }

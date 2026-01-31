@@ -13,7 +13,9 @@
 #include <stdbool.h>
 #include <stdlib.h>
 #include <string.h>
+#include <conio.h>
 
 #include "maximums.h"
 #include "errors.h"
 #include "ansiCodes.h"
+#include "program.h"

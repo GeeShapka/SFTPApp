@@ -56,7 +56,7 @@ bool consoleWriteError(const char* error)
 	return true;
 }
 
-bool getUserInput(int maxLength, char* buffer)
+bool consoleReadLine(int maxLength, char* buffer)
 {
 	if (buffer == NULL)
 	{
@@ -71,13 +71,67 @@ bool getUserInput(int maxLength, char* buffer)
 	return true;
 }
 
-/// <summary>
-/// prompt the user to press a key to continue
-/// </summary>
-/// <param name=""></param>
-void pressAnyKeyToContinue(void)
+bool consoleGetKey(char* key, struct Program* p)
+{
+	bool result = false;
+	switch (p->os)
+	{
+	case WINDOWS:
+		result = consoleGetKey_Win(key);
+		break;
+	case LINUX:
+		result = consoleGetKey_Linux(key);
+		break;
+	default:
+		break;
+	}
+	return result;
+}
+
+bool consoleGetKey_Win(char* key)
+{
+	*key = _getch();
+	if (key == NULL) { return false; }
+	return true;
+}
+
+bool consoleGetKey_Linux(char* key)
+{
+	char buffer[MAX_STRING_SIZE] = { 0 };
+	if (fgets(buffer, MAX_STRING_SIZE, stdin) == NULL)
+	{
+		consoleWriteError(ERROR_NULL_USER_INPUT);
+		return false;
+	}
+	*key = buffer[0];
+	return true;
+}
+
+void pressAnyKeyToContinue(struct Program* p)
+{
+	switch (p->os)
+	{
+	case WINDOWS:
+		pressAnyKeyToContinue_Win();
+		break;
+	case LINUX:
+		pressAnyKeyToContinue_Linux();
+		break;
+	default:
+		break;
+	}
+}
+
+void pressAnyKeyToContinue_Win(void)
+{
+	consoleWriteLineConst(PRESS_ENTER_STRING);
+	char c = 0;
+	consoleGetKey_Win(&c);
+}
+
+void pressAnyKeyToContinue_Linux(void)
 {
 	consoleWriteLineConst(PRESS_ENTER_STRING);
 	char buffer[MAX_INPUT_BUFFER_STRING_SIZE] = { 0 };
-	fgets(buffer, MAX_INPUT_BUFFER_STRING_SIZE, stdin);
+	consoleReadLine(MAX_INPUT_BUFFER_STRING_SIZE, buffer);
 }

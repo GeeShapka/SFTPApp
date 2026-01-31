@@ -8,9 +8,9 @@
 #include "uiOperations.h"
 
 
-int mainMenu(void)
+int mainMenu(struct Program* p)
 {
-	char inputBuffer[MAX_INPUT_BUFFER_STRING_SIZE] = { 0 };
+	char inputChar = 0;
 	int inputNumber = 0;
 	while (1)
 	{
@@ -22,18 +22,18 @@ int mainMenu(void)
 		consoleWriteLineConst(MAIN_MENU);
 
 		//get user input and convert to int
-		if(!getUserInput(MAX_INPUT_BUFFER_STRING_SIZE, inputBuffer)) 
+		if(!consoleGetKey(&inputChar, p)) 
 		{ 
-			pressAnyKeyToContinue();
+			pressAnyKeyToContinue(p);
 			continue; 
 		}
-		inputNumber = atoi(inputBuffer);
+		inputNumber = atoi(&inputChar);
 
 		//validate number
 		if (0 >= inputNumber || inputNumber > MAIN_MENU_OPTION_COUNT)
 		{ 
 			consoleWriteError(ERROR_INVALID_MENU_OPTION);
-			pressAnyKeyToContinue();
+			pressAnyKeyToContinue(p);
 			continue; 
 		}
 		else

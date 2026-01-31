@@ -135,6 +135,7 @@
     <ClInclude Include="headers.h" />
     <ClInclude Include="maximums.h" />
     <ClInclude Include="menus.h" />
+    <ClInclude Include="program.h" />
     <ClInclude Include="sftp.h" />
     <ClInclude Include="stringOperations.h" />
     <ClInclude Include="uiOperations.h" />

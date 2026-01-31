@@ -28,4 +28,4 @@
 /**
 * displays the main menu and gets the chosen option from the user 
 */
-int mainMenu(void);
+int mainMenu(struct Program*);

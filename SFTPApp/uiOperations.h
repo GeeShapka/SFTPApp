@@ -58,10 +58,46 @@ bool consoleWriteError(const char* error);
 /// true: user input has been obtained.
 /// false: no input or bad input was obtained
 /// </returns>
-bool getUserInput(int, char*);
+bool consoleReadLine(int, char*);
+
+/// <summary>
+/// gets the next key the user presses
+/// </summary>
+/// <param name="key">a char* to hold the input</param>
+/// <returns>
+/// False if the ptr is NULL. True: otherwise</returns>
+bool consoleGetKey(char*, struct Program*);
+
+/// <summary>
+/// gets the next key the user presses without enter being pressed
+/// </summary>
+/// <param name="key">a char* to hold the input</param>
+/// <returns>
+/// False if the ptr is NULL. True: otherwise</returns>
+bool consoleGetKey_Win(char*);
+
+/// <summary>
+/// gets the next key the user presses by geting a string of characters and only keeping the first one
+/// </summary>
+/// <param name="key">a char* to hold the input</param>
+/// <returns>
+/// False if the ptr is NULL. True: otherwise</returns>
+bool consoleGetKey_Linux(char*);
+
+/// <summary>
+/// prompt the user to press a key to continue, changes based on os
+/// </summary>
+/// <param name=""></param>
+void pressAnyKeyToContinue(struct Program*);
 
 /// <summary>
 /// prompt the user to press a key to continue
 /// </summary>
 /// <param name=""></param>
-void pressAnyKeyToContinue(void);
+void pressAnyKeyToContinue_Win(void);
+
+/// <summary>
+/// prompt the user to press a key to continue
+/// </summary>
+/// <param name=""></param>
+void pressAnyKeyToContinue_Linux(void);
