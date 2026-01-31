@@ -14,18 +14,68 @@
 
 //1
 #define CONFIG_MENU "1. Set Remote IP\n2. Set Remote User\n3. Set Remote Password\n"
+#define CONFIG_MENU_OPTION_COUNT 3
 //2
 #define LOCAL_PATH_MENU "1. Saved Paths\n2. Browse Local Files\n3. Enter Path Manualy\n"
+#define LOCAL_PATH_MENU_OPTION_COUNT 3
 //3
 #define REMOTE_PATH_MENU "1. Saved Paths\n2. Browse Remote Files\n3. Enter Path Manualy\n"
+#define REMOTE_PATH_MENU_OPTION_COUNT 3
 //4
 #define OPERATION_MENU "1. PUT\n"
+#define OPERATION_MENU_OPTION_COUNT 1
 //5
 #define TRANSFER_MENU "Confirmation\n1. Proceed\n2. Cancel\n"
+#define TRANSFER_MENU_OPTION_COUNT 2
 
 
+/// <summary>
+/// displays a menu and gets input for the menu from the user
+/// </summary>
+/// <param name="p"></param>
+/// <param name="menu"></param>
+/// <param name="options"></param>
+/// <returns>the chosen option</returns>
+int menu(struct Program*, const char*, int);
 
-/**
-* displays the main menu and gets the chosen option from the user 
-*/
+/// <summary>
+/// gets the main menu option from the user
+/// </summary>
+/// <param name="p"></param>
+/// <returns>the chosen option</returns>
 int mainMenu(struct Program*);
+
+/// <summary>
+/// gets the config menu option from the user
+/// </summary>
+/// <param name="p"></param>
+/// <returns>the chosen option</returns>
+int configMenu(struct Program*);
+
+/// <summary>
+/// gets the local path menu option from the user
+/// </summary>
+/// <param name="p"></param>
+/// <returns>the chosen option</returns>
+int localPathMenu(struct Program*);
+
+/// <summary>
+/// gets the remote path menu option from the user
+/// </summary>
+/// <param name="p"></param>
+/// <returns>the chosen option</returns>
+int remotePathMenu(struct Program*);
+
+/// <summary>
+/// gets the operation menu option from the user
+/// </summary>
+/// <param name="p"></param>
+/// <returns>the chosen option</returns>
+int operationMenu(struct Program*);
+
+/// <summary>
+/// gets the transfer menu option from the user
+/// </summary>
+/// <param name="p"></param>
+/// <returns>the chosen option</returns>
+int transferMenu(struct Program*);
