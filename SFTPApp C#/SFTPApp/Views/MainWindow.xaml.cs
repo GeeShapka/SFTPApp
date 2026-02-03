@@ -1,5 +1,6 @@
 ﻿using Microsoft.Win32;
 using Renci.SshNet;
+using SFTPApp.ViewModels;
 using System.Text;
 using System.Windows;
 using System.Windows.Controls;
@@ -20,17 +21,12 @@ namespace SFTPApp.Views
     {
         public MainWindow()
         {
-            DataContext = new ViewModels.MainWindowViewModel();
             InitializeComponent();
         }
 
         private void btnLocalFile_Click(object sender, RoutedEventArgs e)
         {
             
-        }
-
-        private void btnRemoteFile_Click(object sender, RoutedEventArgs e)
-        {
         }
     }
 }

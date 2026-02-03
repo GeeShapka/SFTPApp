@@ -5,7 +5,11 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:SFTPApp.Views"
         mc:Ignorable="d"
-        Title="MainWindow" Height="1080" Width="1920">
+        Title="MainWindow" Height="1080" Width="1920"
+        xmlns:vms="clr-namespace:SFTPApp.ViewModels">
+    <Window.DataContext>
+        <vms:MainWindowViewModel/>
+    </Window.DataContext>
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="2*"/>
@@ -17,10 +21,12 @@
                 Content="Local File/Folder"
                 Margin="50"
                 Grid.Column="0"/>
-        <Button Name="btnRemoteFile"
-                Click="btnRemoteFile_Click"
-                Content="Remote File/Folder"
-                Margin="50"
-                Grid.Column="2"/>
+        <ListView Grid.Column="2" ItemsSource="{Binding FileOptions}">
+            <ListView.View>
+                <GridView>
+                    <GridViewColumn Header="Name" DisplayMemberBinding="{Binding Name}"/>
+                </GridView>
+            </ListView.View>
+        </ListView>
     </Grid>
 </Window>
