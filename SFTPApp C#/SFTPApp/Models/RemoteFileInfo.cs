@@ -15,13 +15,15 @@
     {
         //properties
         public string Name { get; }
+        public string IsDirectory { get; }
 
         //end of properties
 
         //constructors
-        public RemoteFileInfo(string name)
+        public RemoteFileInfo(string name, string isDirectory)
         {
             Name = name;
+            IsDirectory = isDirectory;
         }
 
         //end of constructors

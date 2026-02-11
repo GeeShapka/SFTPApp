@@ -26,7 +26,15 @@ namespace SFTPApp.Views
 
         private void btnLocalFile_Click(object sender, RoutedEventArgs e)
         {
-            
+
+        }
+
+        private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            if(MessageBox.Show("U Sure Bro?", "Are You Sure About That", MessageBoxButton.YesNo, MessageBoxImage.Question) == MessageBoxResult.No)
+            {
+                e.Cancel = true;
+            }
         }
     }
 }

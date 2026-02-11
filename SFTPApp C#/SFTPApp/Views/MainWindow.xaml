@@ -6,7 +6,8 @@
         xmlns:local="clr-namespace:SFTPApp.Views"
         mc:Ignorable="d"
         Title="MainWindow" Height="1080" Width="1920"
-        xmlns:vms="clr-namespace:SFTPApp.ViewModels">
+        xmlns:vms="clr-namespace:SFTPApp.ViewModels"
+        Closing="Window_Closing">
     <Window.DataContext>
         <vms:MainWindowViewModel/>
     </Window.DataContext>
@@ -21,9 +22,11 @@
                 Content="Local File/Folder"
                 Margin="50"
                 Grid.Column="0"/>
+        <Button Grid.Column="1" Margin="50" Content="Connect" Command="{Binding ConnectToRemoteComputerCommand}"/>
         <ListView Grid.Column="2" ItemsSource="{Binding FileOptions}">
             <ListView.View>
                 <GridView>
+                    <GridViewColumn Header="Dir" DisplayMemberBinding="{Binding IsDirectory}"/>
                     <GridViewColumn Header="Name" DisplayMemberBinding="{Binding Name}"/>
                 </GridView>
             </ListView.View>
