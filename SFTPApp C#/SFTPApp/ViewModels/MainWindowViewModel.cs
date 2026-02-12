@@ -1,6 +1,8 @@
 ﻿using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Diagnostics.Eventing.Reader;
 using System.IO;
+using System.Windows;
 using System.Windows.Data;
 using System.Windows.Input;
 using Renci.SshNet.Sftp;
@@ -19,10 +21,22 @@ namespace SFTPApp.ViewModels
 	* NAME : MainWindowViewModel
 	* PURPOSE :
 	*/
-	public class MainWindowViewModel : INotifyPropertyChanged
+	public class MainWindowViewModel : INotifyPropertyChanged, IDisposable
     {
 		private NetworkWorker? _networkWorker;
 		public ObservableCollection<RemoteFileInfo> FileOptions { get; }
+		private TimeSpan _connectionTimeout = new TimeSpan(0, 0, 5);//timeout for connections set to 5 seconds
+
+		private bool _shutdown;
+		public bool Shutdown
+		{
+			get { return _shutdown; }
+			set
+			{
+				_shutdown = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Shutdown)));
+			}
+		}
 
 		//user info
 		private string _username = string.Empty;
@@ -62,12 +76,10 @@ namespace SFTPApp.ViewModels
 		//events
 		public event PropertyChangedEventHandler? PropertyChanged;
 
-		public MainWindowViewModel()
+        public MainWindowViewModel()
 		{
 			FileOptions = new ObservableCollection<RemoteFileInfo>();
 			ICollectionView view = CollectionViewSource.GetDefaultView(FileOptions);
-            view.SortDescriptions.Add(new SortDescription("IsDirectory", ListSortDirection.Ascending));//work on this----------------------------------------------------------------
-            view.SortDescriptions.Add(new SortDescription("Name", ListSortDirection.Ascending));//work on this----------------------------------------------------------------
 
             //user info
             Username = "george";
@@ -80,16 +92,39 @@ namespace SFTPApp.ViewModels
 
 		private void ConnectToRemoteComputer()//work on this----------------------------------------------------------------
 		{
-			_networkWorker = new NetworkWorker(IpAddress, Username, Password);
-			FileOptions.Clear();
-			IEnumerable<ISftpFile> list = new List<ISftpFile>();
-			list = _networkWorker.GetCurrentDirectory();
-			foreach (ISftpFile file in list)
+			try
 			{
-				string dir = string.Empty;
-				if (file.IsDirectory) { dir = "■"; }
-                FileOptions.Add(new RemoteFileInfo(file.Name, dir));
+                _networkWorker = new NetworkWorker(IpAddress, Username, Password, _connectionTimeout);
+                FileOptions.Clear();
+                IEnumerable<ISftpFile> list = new List<ISftpFile>();
+                list = _networkWorker.GetCurrentDirectory();
+                foreach (ISftpFile file in list)
+                {
+                    string dir = string.Empty;
+                    if (file.IsDirectory) { dir = "■"; }
+                    FileOptions.Add(new RemoteFileInfo(file.Name, dir));
+                }
             }
+			catch(Exception ex)
+			{
+				UserCommunication.DisplayError(ex.Message);
+			}
+			
 		}
-	}//end of MainWindowViewModel
+
+		public void Dispose()
+		{
+			try
+            {
+                if(_networkWorker != null)
+				{
+					_networkWorker.Disconnect();
+                }
+            }
+			catch(Exception ex)
+			{
+				UserCommunication.DisplayError(ex.Message);
+			}
+		}
+    }//end of MainWindowViewModel
 }

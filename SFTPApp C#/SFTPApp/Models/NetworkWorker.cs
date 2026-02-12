@@ -1,4 +1,5 @@
 ﻿using Renci.SshNet;
+using Renci.SshNet.Common;
 using Renci.SshNet.Sftp;
 using System;
 using System.Collections.Generic;
@@ -18,7 +19,7 @@ namespace SFTPApp.Models
     {
 		private SftpClient _sftpClient;
 
-		public NetworkWorker(string ipAddress, string username, string password)
+		public NetworkWorker(string ipAddress, string username, string password, TimeSpan timeout)
 		{
 			try
             {
@@ -27,17 +28,40 @@ namespace SFTPApp.Models
                 {
                     throw new Exception("Could not create the SFTP client");
                 }
+				_sftpClient.OperationTimeout = timeout;
 				_sftpClient.Connect();
             }
-			catch (Exception ex)
+			catch(Exception ex)
 			{
-				throw new Exception(ex.Message);
+				throw;
 			}
 		}
 
+		/// <summary>
+		/// gets the current working directory
+		/// </summary>
+		/// <returns></returns>
 		public IEnumerable<ISftpFile> GetCurrentDirectory()
 		{
 			return _sftpClient.ListDirectory(_sftpClient.WorkingDirectory);
+		}
+
+		/// <summary>
+		/// disconnects from the remote machine
+		/// </summary>
+		public void Disconnect()
+		{
+			try
+            {
+                if (_sftpClient != null && _sftpClient.IsConnected)
+                {
+                    _sftpClient.Disconnect();
+                }
+            }
+			catch (Exception ex)
+			{
+				throw;
+			}
 		}
     }//end of NetworkWorker
 

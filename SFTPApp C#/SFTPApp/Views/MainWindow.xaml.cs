@@ -19,9 +19,13 @@ namespace SFTPApp.Views
     /// </summary>
     public partial class MainWindow : Window
     {
+        private MainWindowViewModel? _vm;
         public MainWindow()
         {
             InitializeComponent();
+            _vm = new MainWindowViewModel();
+            DataContext = _vm;
+            this.Closed += MainWindow_Closed;
         }
 
         private void btnLocalFile_Click(object sender, RoutedEventArgs e)
@@ -36,5 +40,17 @@ namespace SFTPApp.Views
                 e.Cancel = true;
             }
         }
+        private void MainWindow_Closed(object? sender, EventArgs e)
+        {
+            // Call the Dispose method when the window is closed
+            if (_vm != null)
+            {
+                _vm.Dispose();
+                _vm = null;
+            }
+            // Unsubscribe from the closed event itself
+            this.Closed -= MainWindow_Closed;
+        }
+
     }
 }

@@ -14,8 +14,8 @@
     public class RemoteFileInfo
     {
         //properties
+        public string Directory { get; }
         public string Name { get; }
-        public string IsDirectory { get; }
 
         //end of properties
 
@@ -23,7 +23,7 @@
         public RemoteFileInfo(string name, string isDirectory)
         {
             Name = name;
-            IsDirectory = isDirectory;
+            Directory = isDirectory;
         }
 
         //end of constructors
