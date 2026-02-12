@@ -43,13 +43,41 @@ namespace SFTPApp.Models
 		/// <returns></returns>
 		public IEnumerable<ISftpFile> GetCurrentDirectory()
 		{
-			return _sftpClient.ListDirectory(_sftpClient.WorkingDirectory);
+			IEnumerable<ISftpFile> list = new List<ISftpFile>();
+            try
+			{
+				list = _sftpClient.ListDirectory(_sftpClient.WorkingDirectory);
+            }
+            catch (Exception ex)
+			{
+				throw;
+			}
+			return list;
 		}
 
 		/// <summary>
-		/// disconnects from the remote machine
+		/// goes to the current directorys parent directory
 		/// </summary>
-		public void Disconnect()
+		/// <returns></returns>
+        public IEnumerable<ISftpFile> GoToParentDirectory()
+		{
+            IEnumerable<ISftpFile> list = new List<ISftpFile>();
+            try
+			{
+				_sftpClient.ChangeDirectory(_sftpClient.WorkingDirectory + "/..");
+				list = _sftpClient.ListDirectory(_sftpClient.WorkingDirectory);
+            }
+			catch (Exception ex)
+			{
+				throw;
+			}
+			return list;
+        }
+
+        /// <summary>
+        /// disconnects from the remote machine
+        /// </summary>
+        public void Disconnect()
 		{
 			try
             {
