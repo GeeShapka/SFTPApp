@@ -72,11 +72,13 @@ namespace SFTPApp.ViewModels
 
         //commands
         public ICommand ConnectToRemoteComputerCommand { get; }
-        public ICommand GoToParentDirectoryCommand { get; }
+        public ICommand ChangeDirectoryCommand { get; }
 
         //events
         public event PropertyChangedEventHandler? PropertyChanged;
 
+
+        //constructor
         public MainWindowViewModel()
         {
             FileOptions = new ObservableCollection<RemoteFileInfo>();
@@ -89,31 +91,57 @@ namespace SFTPApp.ViewModels
 
             //commands
             ConnectToRemoteComputerCommand = new RelayCommand(ConnectToRemoteComputer);
-            GoToParentDirectoryCommand = new RelayCommand(GoToParentDirectory);
+            ChangeDirectoryCommand = new RelayCommand(ChangeDirectory);
         }
 
-        private void ConnectToRemoteComputer(object o)//work on this----------------------------------------------------------------
+
+
+        /// <summary>
+        /// connects to the remote machine
+        /// </summary>
+        /// <param name="o"></param>
+        private void ConnectToRemoteComputer(object o)
         {
-            try
+            if(_networkWorker == null)
             {
-                _networkWorker = new NetworkWorker(IpAddress, Username, Password, _connectionTimeout);
-                FileOptions.Clear();
-                IEnumerable<ISftpFile> list = new List<ISftpFile>();
-                list = _networkWorker.GetCurrentDirectory();
-                foreach (ISftpFile file in list)
+                try
                 {
-                    string dir = string.Empty;
-                    if (file.IsDirectory) { dir = "■"; }
-                    FileOptions.Add(new RemoteFileInfo(file.Name, dir));
+                    _networkWorker = new NetworkWorker(IpAddress, Username, Password, _connectionTimeout);
+                    IEnumerable<ISftpFile> list = new List<ISftpFile>();
+                    list = _networkWorker.GetCurrentDirectory();
+                    UpdateFileOptions(list);
+                }
+                catch (Exception ex)
+                {
+                    UserCommunication.DisplayError(ex.Message);
                 }
             }
-            catch (Exception ex)
+        }
+
+
+
+        /// <summary>
+        /// updates the file options observable collection
+        /// </summary>
+        /// <param name="list"></param>
+        private void UpdateFileOptions(IEnumerable<ISftpFile> list)
+        {
+            FileOptions.Clear();
+            foreach (ISftpFile file in list)
             {
-                UserCommunication.DisplayError(ex.Message);
+                string dir = string.Empty;
+                if (file.IsDirectory) { dir = "■"; }
+                FileOptions.Add(new RemoteFileInfo(file.Name, dir));
             }
         }
 
-        private void GoToParentDirectory(object o)
+
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="o"></param>
+        private void ChangeDirectory(object o)
         {
             if(o is string inputDir)
             {
@@ -121,15 +149,9 @@ namespace SFTPApp.ViewModels
                 {
                     if (_networkWorker != null)
                     {
-                        FileOptions.Clear();
                         IEnumerable<ISftpFile> list = new List<ISftpFile>();
                         list = _networkWorker.ChangeDirectory(inputDir);
-                        foreach (ISftpFile file in list)
-                        {
-                            string dir = string.Empty;
-                            if (file.IsDirectory) { dir = "■"; }
-                            FileOptions.Add(new RemoteFileInfo(file.Name, dir));
-                        }
+                        UpdateFileOptions(list);
                     }
                     else
                     {
@@ -143,6 +165,11 @@ namespace SFTPApp.ViewModels
             }
         }
 
+
+
+        /// <summary>
+        /// handles cleaning up resourses
+        /// </summary>
         public void Dispose()
         {
             try

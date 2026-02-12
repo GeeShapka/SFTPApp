@@ -37,6 +37,8 @@ namespace SFTPApp.Models
 			}
 		}
 
+
+
 		/// <summary>
 		/// gets the current working directory
 		/// </summary>
@@ -55,6 +57,8 @@ namespace SFTPApp.Models
 			return list;
 		}
 
+
+
 		/// <summary>
 		/// goes to the current directorys parent directory
 		/// </summary>
@@ -64,7 +68,7 @@ namespace SFTPApp.Models
             IEnumerable<ISftpFile> list = new List<ISftpFile>();
             try
 			{
-				if(dir.Equals("/"))
+				if(dir.Equals("/"))//user wants to go to the root
                 {
                     _sftpClient.ChangeDirectory("/");
                     list = _sftpClient.ListDirectory(_sftpClient.WorkingDirectory);
@@ -81,6 +85,8 @@ namespace SFTPApp.Models
 			}
 			return list;
         }
+
+
 
         /// <summary>
         /// disconnects from the remote machine
