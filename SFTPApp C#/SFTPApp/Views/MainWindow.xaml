@@ -22,12 +22,18 @@
         <Button Grid.Column="1" Margin="50" Content="Connect" Command="{Binding ConnectToRemoteComputerCommand}"/>
         <!--remote machine section-->
         <StackPanel Grid.Column="2">
-            <Button Content="Parent Directory"
+            <Button Content="Root Directory"
                     Width="100"
-                    Command="{Binding GoToParentDirectoryCommand}"/>
+                    Click="btnRemoteRootDirectory_Click"/>
             <DataGrid IsReadOnly="True" 
                       ItemsSource="{Binding FileOptions}"
-                      Height="400"/>
+                      Height="400">
+                <DataGrid.RowStyle>
+                    <Style TargetType="{x:Type DataGridRow}">
+                        <EventSetter Event="MouseDoubleClick" Handler="DataGridRow_MouseDoubleClick"/>
+                    </Style>
+                </DataGrid.RowStyle>
+            </DataGrid>
         </StackPanel>
     </Grid>
 </Window>

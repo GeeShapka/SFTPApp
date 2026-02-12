@@ -92,7 +92,7 @@ namespace SFTPApp.ViewModels
             GoToParentDirectoryCommand = new RelayCommand(GoToParentDirectory);
         }
 
-        private void ConnectToRemoteComputer()//work on this----------------------------------------------------------------
+        private void ConnectToRemoteComputer(object o)//work on this----------------------------------------------------------------
         {
             try
             {
@@ -113,30 +113,33 @@ namespace SFTPApp.ViewModels
             }
         }
 
-        private void GoToParentDirectory()
+        private void GoToParentDirectory(object o)
         {
-            try
+            if(o is string inputDir)
             {
-                if (_networkWorker != null)
+                try
                 {
-                    FileOptions.Clear();
-                    IEnumerable<ISftpFile> list = new List<ISftpFile>();
-                    list = _networkWorker.GoToParentDirectory();
-                    foreach (ISftpFile file in list)
+                    if (_networkWorker != null)
                     {
-                        string dir = string.Empty;
-                        if (file.IsDirectory) { dir = "■"; }
-                        FileOptions.Add(new RemoteFileInfo(file.Name, dir));
+                        FileOptions.Clear();
+                        IEnumerable<ISftpFile> list = new List<ISftpFile>();
+                        list = _networkWorker.ChangeDirectory(inputDir);
+                        foreach (ISftpFile file in list)
+                        {
+                            string dir = string.Empty;
+                            if (file.IsDirectory) { dir = "■"; }
+                            FileOptions.Add(new RemoteFileInfo(file.Name, dir));
+                        }
+                    }
+                    else
+                    {
+                        throw new Exception("Remote Machine Not Connected");
                     }
                 }
-                else
+                catch (Exception ex)
                 {
-                    throw new Exception("Remote Machine Not Connected");
+                    UserCommunication.DisplayError(ex.Message);
                 }
-            }
-            catch (Exception ex)
-            {
-                UserCommunication.DisplayError(ex.Message);
             }
         }
 

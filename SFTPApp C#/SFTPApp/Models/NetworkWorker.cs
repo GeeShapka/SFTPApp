@@ -59,13 +59,21 @@ namespace SFTPApp.Models
 		/// goes to the current directorys parent directory
 		/// </summary>
 		/// <returns></returns>
-        public IEnumerable<ISftpFile> GoToParentDirectory()
+        public IEnumerable<ISftpFile> ChangeDirectory(string dir)
 		{
             IEnumerable<ISftpFile> list = new List<ISftpFile>();
             try
 			{
-				_sftpClient.ChangeDirectory(_sftpClient.WorkingDirectory + "/..");
-				list = _sftpClient.ListDirectory(_sftpClient.WorkingDirectory);
+				if(dir.Equals("/"))
+                {
+                    _sftpClient.ChangeDirectory("/");
+                    list = _sftpClient.ListDirectory(_sftpClient.WorkingDirectory);
+                }
+                else
+                {
+                    _sftpClient.ChangeDirectory(_sftpClient.WorkingDirectory + $"/{dir}");
+                    list = _sftpClient.ListDirectory(_sftpClient.WorkingDirectory);
+                }
             }
 			catch (Exception ex)
 			{
