@@ -188,7 +188,7 @@ namespace SFTPApp.ViewModels
         }
 
 
-        private void SaveCurrentPreset(object o)
+        private void SaveCurrentPreset(object o)//--------------------------------------------------------------------------------------------------------------------------fix
         {
             UserPreset edit = new UserPreset(PresetName, Username, Password, IpAddress);
             _userPresets.EditPreset(CurrentPreset.Id, edit);
