@@ -14,19 +14,56 @@
             <ColumnDefinition/>
             <ColumnDefinition Width="2*"/>
         </Grid.ColumnDefinitions>
-        <Button Name="btnLocalFile"
-                Click="btnLocalFile_Click"
-                Content="Local File/Folder"
-                Margin="50"
-                Grid.Column="0"/>
+
+        <StackPanel>
+            <ComboBox ItemsSource="{Binding UserPresetNames}" SelectedIndex="0" SelectedItem="{Binding CurrentPreset}"/>
+
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="10">
+                <StackPanel>
+                    <Label Content="Preset Name"/>
+                    <TextBox Text="{Binding PresetName}"/>
+                </StackPanel>
+                <StackPanel>
+                    <Label Content="Username"/>
+                    <TextBox Text="{Binding Username}"/>
+                </StackPanel>
+                <StackPanel>
+                    <Label Content="Password"/>
+                    <TextBox Text="{Binding Password}"/>
+                </StackPanel>
+                <StackPanel>
+                    <Label Content="Host Ip Address"/>
+                    <TextBox Text="{Binding IpAddress}"/>
+                </StackPanel>
+            </StackPanel>
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="10">
+                <Button Content="Save Current Preset" Margin="0, 0, 5, 0" Command="{Binding SaveCurrentPresetCommand}"/>
+                <Button Content="Save New Preset"/>
+            </StackPanel>
+
+
+            <Button Name="btnLocalFile"
+                    Click="btnLocalFile_Click"
+                    Content="Local File/Folder"
+                    Margin="50"
+                    Grid.Column="0"/>
+        </StackPanel>
+
+
         <Button Grid.Column="1" Margin="50" Content="Connect" Command="{Binding ConnectToRemoteComputerCommand}"/>
+
+
+
         <!--remote machine section-->
         <StackPanel Grid.Column="2">
-            <Button Content="Root Directory"
+            <StackPanel Orientation="Horizontal">
+                <Button Content="Root Directory"
                     Width="100"
                     Click="btnRemoteRootDirectory_Click"/>
+                <ComboBox ItemsSource="{Binding RemotePathPresets}"/>
+            </StackPanel>
             <DataGrid IsReadOnly="True" 
-                      ItemsSource="{Binding FileOptions}"
+                      ItemsSource="{Binding RemoteFileOptions}"
                       Height="400">
                 <DataGrid.RowStyle>
                     <Style TargetType="{x:Type DataGridRow}">

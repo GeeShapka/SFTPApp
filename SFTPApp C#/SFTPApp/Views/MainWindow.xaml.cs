@@ -80,7 +80,7 @@ namespace SFTPApp.Views
                     }
                     else if(_vm != null)
                     {
-                        _vm.ChangeDirectoryCommand.Execute(rfi.Name);
+                        _vm.ChangeRemoteDirectoryCommand.Execute(rfi.Name);
                     }
                 }
             }
@@ -88,7 +88,7 @@ namespace SFTPApp.Views
 
         private void btnRemoteRootDirectory_Click(object sender, RoutedEventArgs e)
         {
-            _vm.ChangeDirectoryCommand.Execute("/");
+            _vm.ChangeRemoteDirectoryCommand.Execute("/");
         }
     }//end of class
 }

@@ -24,7 +24,21 @@ namespace SFTPApp.ViewModels
     public class MainWindowViewModel : INotifyPropertyChanged, IDisposable
     {
         private NetworkWorker? _networkWorker;
-        public ObservableCollection<RemoteFileInfo> FileOptions { get; }
+        private UserPresets _userPresets;
+        private UserPreset _currentPreset = new UserPreset();
+        public UserPreset CurrentPreset
+        {
+            get { return _currentPreset; }
+            set
+            {
+                _currentPreset = value;
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(CurrentPreset)));
+            }
+        }
+        public ObservableCollection<RemoteFileInfo> RemoteFileOptions { get; }
+        public ObservableCollection<string> RemotePathPresets { get; }
+        public ObservableCollection<string> UserPresetNames { get; }
+
         private TimeSpan _connectionTimeout = new TimeSpan(0, 0, 5);//timeout for connections set to 5 seconds
 
         private bool _shutdown;
@@ -39,6 +53,16 @@ namespace SFTPApp.ViewModels
         }
 
         //user info
+        private string _presetName = string.Empty;
+        public string PresetName
+        {
+            get { return _presetName; }
+            set
+            {
+                _presetName = value;
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(PresetName)));
+            }
+        }
         private string _username = string.Empty;
         public string Username
         {
@@ -72,7 +96,8 @@ namespace SFTPApp.ViewModels
 
         //commands
         public ICommand ConnectToRemoteComputerCommand { get; }
-        public ICommand ChangeDirectoryCommand { get; }
+        public ICommand ChangeRemoteDirectoryCommand { get; }
+        public ICommand SaveCurrentPresetCommand { get; }
 
         //events
         public event PropertyChangedEventHandler? PropertyChanged;
@@ -81,17 +106,40 @@ namespace SFTPApp.ViewModels
         //constructor
         public MainWindowViewModel()
         {
-            FileOptions = new ObservableCollection<RemoteFileInfo>();
-            ICollectionView view = CollectionViewSource.GetDefaultView(FileOptions);
+            try
+            {
+                _userPresets = UserPresets.InitializeUserPresets();
+            }
+            catch (Exception ex)
+            {
+                UserCommunication.DisplayError(ex.Message);
+            }
+            finally
+            {
+                if (_userPresets == null)
+                {
+                    _userPresets = new UserPresets();
+                }
+            }
+
+            RemoteFileOptions = new ObservableCollection<RemoteFileInfo>();
+
+            RemotePathPresets = new ObservableCollection<string>();
+
+            UserPresetNames = _userPresets.GetPresetNames();
+
+            CurrentPreset = _userPresets.Presets[0];
 
             //user info
-            Username = "george";
-            Password = "2395";
-            IpAddress = "100.108.227.107";
+            PresetName = CurrentPreset.PresetName;
+            Username = CurrentPreset.UserName;
+            Password = CurrentPreset.Password;
+            IpAddress = CurrentPreset.IpAddress;
 
             //commands
             ConnectToRemoteComputerCommand = new RelayCommand(ConnectToRemoteComputer);
-            ChangeDirectoryCommand = new RelayCommand(ChangeDirectory);
+            ChangeRemoteDirectoryCommand = new RelayCommand(ChangeRemoteDirectory);
+            SaveCurrentPresetCommand = new RelayCommand(SaveCurrentPreset);
         }
 
 
@@ -102,7 +150,7 @@ namespace SFTPApp.ViewModels
         /// <param name="o"></param>
         private void ConnectToRemoteComputer(object o)
         {
-            if(_networkWorker == null)
+            if (_networkWorker == null)
             {
                 try
                 {
@@ -126,24 +174,34 @@ namespace SFTPApp.ViewModels
         /// <param name="list"></param>
         private void UpdateFileOptions(IEnumerable<ISftpFile> list)
         {
-            FileOptions.Clear();
+            RemoteFileOptions.Clear();
             foreach (ISftpFile file in list)
             {
                 string dir = string.Empty;
                 if (file.IsDirectory) { dir = "■"; }
-                FileOptions.Add(new RemoteFileInfo(file.Name, dir));
+                RemoteFileOptions.Add(new RemoteFileInfo(file.Name, dir));
             }
         }
 
 
+        private void SaveCurrentPreset(object o)
+        {
+            UserPreset edit = new UserPreset(PresetName, Username, Password, IpAddress);
+            _userPresets.EditPreset(CurrentPreset.Id, edit);
+            Serializer.SerializeUserPresets(_userPresets, UserPresets.UserPresetsFilePath);
+            CurrentPreset = edit;
+        }
+
+
+
 
         /// <summary>
-        /// 
+        /// This method is used to navigate through the remote machines files
         /// </summary>
         /// <param name="o"></param>
-        private void ChangeDirectory(object o)
+        private void ChangeRemoteDirectory(object o)
         {
-            if(o is string inputDir)
+            if (o is string inputDir)
             {
                 try
                 {
@@ -162,6 +220,20 @@ namespace SFTPApp.ViewModels
                 {
                     UserCommunication.DisplayError(ex.Message);
                 }
+            }
+        }
+
+
+
+        private void SelectLocalFile(object o)
+        {
+            try
+            {
+
+            }
+            catch (Exception ex)
+            {
+                UserCommunication.DisplayError(ex.Message);
             }
         }
 
