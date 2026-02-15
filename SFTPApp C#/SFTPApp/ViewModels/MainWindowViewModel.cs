@@ -37,7 +37,11 @@ namespace SFTPApp.ViewModels
         }
         public ObservableCollection<RemoteFileInfo> RemoteFileOptions { get; }
         public ObservableCollection<string> RemotePathPresets { get; }
-        public ObservableCollection<string> UserPresetNames { get; }
+        public ObservableCollection<string> UserPresetNames 
+        { 
+            get;
+            set;
+        }
 
         private TimeSpan _connectionTimeout = new TimeSpan(0, 0, 5);//timeout for connections set to 5 seconds
 
@@ -189,6 +193,8 @@ namespace SFTPApp.ViewModels
             UserPreset edit = new UserPreset(PresetName, Username, Password, IpAddress);
             _userPresets.EditPreset(CurrentPreset.Id, edit);
             Serializer.SerializeUserPresets(_userPresets, UserPresets.UserPresetsFilePath);
+            UserPresetNames = _userPresets.GetPresetNames();
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(UserPresetNames)));
             CurrentPreset = edit;
         }
 
