@@ -16,7 +16,8 @@
         </Grid.ColumnDefinitions>
 
         <StackPanel>
-            <ComboBox ItemsSource="{Binding UserPresetNames}" SelectedIndex="0" SelectedItem="{Binding CurrentPreset}"/>
+            <ComboBox ItemsSource="{Binding UserPresetNames}"
+                      SelectedItem="{Binding CurrentPresetName}"/>
 
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="10">
                 <StackPanel>
@@ -38,7 +39,7 @@
             </StackPanel>
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="10">
                 <Button Content="Save Current Preset" Margin="0, 0, 5, 0" Command="{Binding SaveCurrentPresetCommand}"/>
-                <Button Content="Save New Preset"/>
+                <Button Content="Save New Preset" Command="{Binding SaveNewPresetCommand}"/>
             </StackPanel>
 
 

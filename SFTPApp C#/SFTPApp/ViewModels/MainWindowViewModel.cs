@@ -1,12 +1,13 @@
-﻿using System.Collections.ObjectModel;
+﻿using Renci.SshNet.Sftp;
+using SFTPApp.Models;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Diagnostics.Eventing.Reader;
 using System.IO;
 using System.Windows;
 using System.Windows.Data;
 using System.Windows.Input;
-using Renci.SshNet.Sftp;
-using SFTPApp.Models;
+using System.Xml.Linq;
 
 namespace SFTPApp.ViewModels
 {
@@ -35,12 +36,38 @@ namespace SFTPApp.ViewModels
                 PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(CurrentPreset)));
             }
         }
+        private string _currentPresetName = string.Empty;
+        public string CurrentPresetName
+        {
+            get { return _currentPresetName; }
+            set
+            {
+                _currentPresetName = value;
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(CurrentPresetName)));
+                SelectCurrentPreset(value);
+            }
+        }
         public ObservableCollection<RemoteFileInfo> RemoteFileOptions { get; }
         public ObservableCollection<string> RemotePathPresets { get; }
+        private ObservableCollection<string> _userPresetNames = new ObservableCollection<string>();
         public ObservableCollection<string> UserPresetNames 
         { 
-            get;
-            set;
+            get { return _userPresetNames; }
+            set
+            {
+                _userPresetNames = value;
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(UserPresetNames)));
+            }
+        }
+        private int _selectedPresetIndex = 0;
+        public int SelectedPresetIndex 
+        { 
+            get { return _selectedPresetIndex; } 
+            set
+            {
+                _selectedPresetIndex = value;
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(SelectedPresetIndex)));
+            }
         }
 
         private TimeSpan _connectionTimeout = new TimeSpan(0, 0, 5);//timeout for connections set to 5 seconds
@@ -102,6 +129,7 @@ namespace SFTPApp.ViewModels
         public ICommand ConnectToRemoteComputerCommand { get; }
         public ICommand ChangeRemoteDirectoryCommand { get; }
         public ICommand SaveCurrentPresetCommand { get; }
+        public ICommand SaveNewPresetCommand { get; }
 
         //events
         public event PropertyChangedEventHandler? PropertyChanged;
@@ -138,12 +166,14 @@ namespace SFTPApp.ViewModels
             PresetName = CurrentPreset.PresetName;
             Username = CurrentPreset.UserName;
             Password = CurrentPreset.Password;
-            IpAddress = CurrentPreset.IpAddress;
+            IpAddress = CurrentPreset.IpAddress;            
+            CurrentPresetName = CurrentPreset.PresetName;
 
             //commands
             ConnectToRemoteComputerCommand = new RelayCommand(ConnectToRemoteComputer);
             ChangeRemoteDirectoryCommand = new RelayCommand(ChangeRemoteDirectory);
             SaveCurrentPresetCommand = new RelayCommand(SaveCurrentPreset);
+            SaveNewPresetCommand = new RelayCommand(SaveNewPreset);
         }
 
 
@@ -172,6 +202,9 @@ namespace SFTPApp.ViewModels
 
 
 
+
+
+
         /// <summary>
         /// updates the file options observable collection
         /// </summary>
@@ -188,14 +221,61 @@ namespace SFTPApp.ViewModels
         }
 
 
-        private void SaveCurrentPreset(object o)//--------------------------------------------------------------------------------------------------------------------------fix
+
+        /// <summary>
+        /// saves settings to the current selected preset 
+        /// </summary>
+        /// <param name="o"></param>
+        private void SaveCurrentPreset(object o)
         {
             UserPreset edit = new UserPreset(PresetName, Username, Password, IpAddress);
             _userPresets.EditPreset(CurrentPreset.Id, edit);
             Serializer.SerializeUserPresets(_userPresets, UserPresets.UserPresetsFilePath);
+
+            //set the list
             UserPresetNames = _userPresets.GetPresetNames();
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(UserPresetNames)));
-            CurrentPreset = edit;
+            //set the current preset name
+            CurrentPresetName = PresetName;
+        }
+
+
+
+        private void SaveNewPreset(object o)
+        {
+            UserPreset temp = new UserPreset(PresetName, Username, Password, IpAddress);
+            _userPresets.AddPreset(temp);
+
+            //set the list
+            UserPresetNames = _userPresets.GetPresetNames();
+            //set the current preset name
+            CurrentPresetName = PresetName;
+        }
+
+
+        /// <summary>
+        /// updates ui to show current preset stuff
+        /// </summary>
+        /// <param name="name"></param>
+        private void SelectCurrentPreset(string name)
+        {
+            UserPreset? temp = null;
+            foreach(UserPreset preset in _userPresets.Presets)
+            {
+                if(preset.PresetName == name)
+                {
+                    temp = preset; 
+                    break;
+                }
+            }
+            if(temp != null)
+            {
+                CurrentPreset = temp;
+                PresetName = CurrentPreset.PresetName;
+                Username = CurrentPreset.UserName;
+                Password = CurrentPreset.Password;
+                IpAddress = CurrentPreset.IpAddress;
+            }
+            return;
         }
 
 
