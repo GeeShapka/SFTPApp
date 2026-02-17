@@ -15,7 +15,7 @@ namespace SFTPApp.Models
     public class UserPreset
 	{
 		public Guid Id { get; }
-		public string PresetName { get; set; }
+		public string PresetName { get; set; } = "Preset 1";
 		public string UserName { get; set; } = string.Empty;
 		public string Password { get; set; } = string.Empty;
 		public string IpAddress { get; set; } = string.Empty;

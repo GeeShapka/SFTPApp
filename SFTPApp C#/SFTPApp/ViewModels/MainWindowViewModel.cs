@@ -150,7 +150,8 @@ namespace SFTPApp.ViewModels
             {
                 if (_userPresets == null)
                 {
-                    _userPresets = new UserPresets();
+                    this.Dispose();
+                    Environment.Exit(0);
                 }
             }
 
@@ -244,6 +245,7 @@ namespace SFTPApp.ViewModels
         {
             UserPreset temp = new UserPreset(PresetName, Username, Password, IpAddress);
             _userPresets.AddPreset(temp);
+            Serializer.SerializeUserPresets(_userPresets, UserPresets.UserPresetsFilePath);
 
             //set the list
             UserPresetNames = _userPresets.GetPresetNames();

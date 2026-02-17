@@ -27,14 +27,17 @@ namespace SFTPApp.Models
 		public static UserPresets InitializeUserPresets()
 		{
 			UserPresets? userPresets;
-			if (!File.Exists(UserPresets.UserPresetsFilePath))
-			{
-				using (File.Create(UserPresets.UserPresetsFilePath))
-				Serializer.SerializeUserPresets(new UserPresets(), UserPresets.UserPresetsFilePath);
-			}
 			try
-			{
-				userPresets = Serializer.DeserializeUserPresets(UserPresets.UserPresetsFilePath);
+            {
+				//if the file does not exist, create it and add an empty UserPresets object to it
+                if (!File.Exists(UserPresets.UserPresetsFilePath))
+                {
+                    FileStream fs = File.Create(UserPresets.UserPresetsFilePath);
+                    fs.Close();
+
+                    Serializer.SerializeUserPresets(new UserPresets(), UserPresets.UserPresetsFilePath);
+                }
+                userPresets = Serializer.DeserializeUserPresets(UserPresets.UserPresetsFilePath);
 				if(userPresets.Presets.Count == 0)
 				{
 					userPresets.Presets.Add(new UserPreset());
